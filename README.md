@@ -1,0 +1,1 @@
+This a repo to do advent of code 2023 for training
