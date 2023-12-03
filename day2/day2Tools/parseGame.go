@@ -1,7 +1,6 @@
 package day2Tools
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 )
@@ -15,8 +14,11 @@ type CubeAction struct {
 	Bag []CubeSet
 }
 
+type CubeBag struct {
+	bagMap map[string]int
+}
 type Game struct {
-	id     int
+	Id     int
 	action []CubeAction
 }
 
@@ -26,9 +28,6 @@ func ParseGame(inputString string) Game {
 
 	var actionArrayString string = inputString[strings.IndexByte(inputString, ':')+2:]
 	var action []CubeAction = getActionArray(actionArrayString)
-
-	fmt.Println(strconv.Itoa(id))
-	fmt.Println(action)
 
 	var game Game = Game{id, action}
 	return game
@@ -72,4 +71,39 @@ func stringToCube(CubeString string) CubeSet {
 
 	var cubeSet CubeSet = CubeSet{cubeColor, cubeAmount}
 	return cubeSet
+}
+
+func CalculateActionCubeBag(game Game) CubeBag {
+	var cubeMap map[string]int = map[string]int{
+		"red":   0,
+		"green": 0,
+		"blue":  0,
+	}
+	for _, action := range game.action {
+		for _, cubeSet := range action.Bag {
+			if cubeMap[cubeSet.Color] < cubeSet.amount {
+				cubeMap[cubeSet.Color] = cubeSet.amount
+			}
+		}
+	}
+
+	return CubeBag{cubeMap}
+}
+
+func ExistingBagMap() CubeBag {
+	var cubeBagMap map[string]int = map[string]int{
+		"red":   12,
+		"green": 13,
+		"blue":  14,
+	}
+	return CubeBag{cubeBagMap}
+}
+
+func CheckIfBagMapPossible(existingBagMap CubeBag, currentBagMap CubeBag) bool {
+	for color, _ := range existingBagMap.bagMap {
+		if existingBagMap.bagMap[color] < currentBagMap.bagMap[color] {
+			return false
+		}
+	}
+	return true
 }
