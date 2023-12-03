@@ -19,7 +19,7 @@ func main() {
 	for scanner.Scan() {
 		var inputString string = scanner.Text()
 		game := day2Tools.ParseGame(inputString)
-		bagMap := day2Tools.CalculateActionCubeBag(game)
+		bagMap := day2Tools.CalculateMinimumCubeBag(game)
 		if day2Tools.CheckIfBagMapPossible(existingBagMap, bagMap) {
 			finalInt += game.Id
 		}

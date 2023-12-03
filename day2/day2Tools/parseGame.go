@@ -73,7 +73,7 @@ func stringToCube(CubeString string) CubeSet {
 	return cubeSet
 }
 
-func CalculateActionCubeBag(game Game) CubeBag {
+func CalculateMinimumCubeBag(game Game) CubeBag {
 	var cubeMap map[string]int = map[string]int{
 		"red":   0,
 		"green": 0,
