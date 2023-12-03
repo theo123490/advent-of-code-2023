@@ -6,16 +6,13 @@ import (
 	"strings"
 )
 
-type Cube struct {
-	Color string
-}
-
-type CubeBag struct {
-	Bag map[Cube]int
+type CubeSet struct {
+	Color  string
+	amount int
 }
 
 type CubeAction struct {
-	Bag map[Cube]int
+	Bag []CubeSet
 }
 
 type Game struct {
@@ -28,10 +25,13 @@ func ParseGame(inputString string) Game {
 	var id int = getGameId(gameIdString)
 
 	var actionArrayString string = inputString[strings.IndexByte(inputString, ':')+2:]
+	var action []CubeAction = getActionArray(actionArrayString)
 
 	fmt.Println(strconv.Itoa(id))
-	fmt.Println(actionArrayString)
-	return Game{}
+	fmt.Println(action)
+
+	var game Game = Game{id, action}
+	return game
 }
 
 func getGameId(gameIdString string) int {
@@ -40,14 +40,36 @@ func getGameId(gameIdString string) int {
 	if err != nil {
 		panic(err)
 	}
-
 	return id
 }
 
-func parseIdString(IdString string) int {
-	return 0
+func getActionArray(actionArrayString string) []CubeAction {
+	var fullActionStringArray []string = strings.Split(actionArrayString, ";")
+	var actionArray []CubeAction = make([]CubeAction, 0)
+	for _, fullActionString := range fullActionStringArray {
+		actionArray = append(actionArray, createCubeAction(fullActionString))
+	}
+	return actionArray
 }
 
-func parseGameAction(ActionString string) CubeAction {
-	return CubeAction{}
+func createCubeAction(fullActionString string) CubeAction {
+	var actionStringArray []string = strings.Split(fullActionString, ",")
+	var cubeAction CubeAction = CubeAction{}
+	for _, actionString := range actionStringArray {
+		var cubeSet CubeSet = stringToCube(actionString)
+		cubeAction.Bag = append(cubeAction.Bag, cubeSet)
+	}
+	return cubeAction
+}
+
+func stringToCube(CubeString string) CubeSet {
+	var cubeStringField []string = strings.Fields(CubeString)
+	var cubeColor string = cubeStringField[1]
+	cubeAmount, err := strconv.Atoi(cubeStringField[0])
+	if err != nil {
+		panic(err)
+	}
+
+	var cubeSet CubeSet = CubeSet{cubeColor, cubeAmount}
+	return cubeSet
 }
