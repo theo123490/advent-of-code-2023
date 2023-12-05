@@ -47,13 +47,22 @@ func getSchematicCoordinates(inputFile string) []Item {
 				if isObject {
 					item.Name = string(itemRunes)
 					itemSlice = append(itemSlice, item)
+
 					itemRunes = make([]rune, 0)
 					isObject = false
 					item = Item{}
 				}
 			} else {
-				isObject = true
+				if unicode.IsDigit(value) != item.isDigit && len(itemRunes) > 0 {
+					item.Name = string(itemRunes)
+					itemSlice = append(itemSlice, item)
 
+					itemRunes = make([]rune, 0)
+					isObject = false
+					item = Item{}
+				}
+
+				isObject = true
 				item.X = append(item.X, currentX)
 				item.Y = currentY
 				item.isDigit = unicode.IsDigit(value)
