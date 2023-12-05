@@ -90,6 +90,14 @@ func CalculateMinimumCubeBag(game Game) CubeBag {
 	return CubeBag{cubeMap}
 }
 
+func CalculateBagPower(bag CubeBag) int {
+	var power int = 1
+	for _, bagMapAmount := range bag.bagMap {
+		power *= bagMapAmount
+	}
+	return power
+}
+
 func ExistingBagMap() CubeBag {
 	var cubeBagMap map[string]int = map[string]int{
 		"red":   12,

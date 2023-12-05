@@ -15,6 +15,7 @@ func main() {
 	defer file.Close()
 
 	var finalInt int = 0
+	var secondQuestionFinalInt int = 0
 	existingBagMap := day2Tools.ExistingBagMap()
 	for scanner.Scan() {
 		var inputString string = scanner.Text()
@@ -23,8 +24,13 @@ func main() {
 		if day2Tools.CheckIfBagMapPossible(existingBagMap, bagMap) {
 			finalInt += game.Id
 		}
+		secondQuestionFinalInt += day2Tools.CalculateBagPower(bagMap)
 	}
 	fmt.Println("$$$$$$$")
 	fmt.Println(strconv.Itoa(finalInt))
+	fmt.Println("$$$$$$$")
+
+	fmt.Println("$$$$$$$")
+	fmt.Println(strconv.Itoa(secondQuestionFinalInt))
 	fmt.Println("$$$$$$$")
 }
