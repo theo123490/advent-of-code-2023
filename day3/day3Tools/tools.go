@@ -2,18 +2,31 @@ package day3Tools
 
 import (
 	"fmt"
+	"unicode"
 
 	"github.com/theo123490/advent-of-code-2023/commonTools"
 )
 
 type Item struct {
-	Item string
-	X    []int
-	Y    int
+	Name    string
+	isDigit bool
+	X       []int
+	Y       int
 }
 
 func GetFinalResult(inputFile string) int {
-	getSchematicCoordinates(inputFile)
+	itemSlices := getSchematicCoordinates(inputFile)
+	symbolSlice := getSymbol(itemSlices)
+	fmt.Println(symbolSlice)
+	for i := range symbolSlice {
+		fmt.Println(symbolSlice[i].Name)
+	}
+	fmt.Println("*******")
+	numberSlice := getNumbers(itemSlices)
+	fmt.Println(numberSlice)
+	for i := range numberSlice {
+		fmt.Println(numberSlice[i].Name)
+	}
 	return 0
 }
 
@@ -32,9 +45,8 @@ func getSchematicCoordinates(inputFile string) []Item {
 		for currentX, value := range inputString {
 			if value == '.' {
 				if isObject {
-					item.Item = string(itemRunes)
+					item.Name = string(itemRunes)
 					itemSlice = append(itemSlice, item)
-
 					itemRunes = make([]rune, 0)
 					isObject = false
 					item = Item{}
@@ -44,6 +56,7 @@ func getSchematicCoordinates(inputFile string) []Item {
 
 				item.X = append(item.X, currentX)
 				item.Y = currentY
+				item.isDigit = unicode.IsDigit(value)
 
 				itemRunes = append(itemRunes, value)
 			}
@@ -52,4 +65,24 @@ func getSchematicCoordinates(inputFile string) []Item {
 	}
 	fmt.Println(itemSlice)
 	return itemSlice
+}
+
+func getSymbol(allItemSlice []Item) []*Item {
+	var symbolSlices []*Item
+	for i := range allItemSlice {
+		if !(allItemSlice[i].isDigit) {
+			symbolSlices = append(symbolSlices, &allItemSlice[i])
+		}
+	}
+	return symbolSlices
+}
+
+func getNumbers(allItemSlice []Item) []*Item {
+	var numberSlices []*Item
+	for i := range allItemSlice {
+		if allItemSlice[i].isDigit {
+			numberSlices = append(numberSlices, &allItemSlice[i])
+		}
+	}
+	return numberSlices
 }
