@@ -8,10 +8,14 @@ import (
 )
 
 type Item struct {
-	Name    string
-	isDigit bool
-	X       []int
-	Y       int
+	Name       string
+	isDigit    bool
+	coordinate Coordinate
+}
+
+type Coordinate struct {
+	X []int
+	Y []int
 }
 
 func GetFinalResult(inputFile string) int {
@@ -63,8 +67,8 @@ func getSchematicCoordinates(inputFile string) []Item {
 				}
 
 				isObject = true
-				item.X = append(item.X, currentX)
-				item.Y = currentY
+				item.coordinate.X = append(item.coordinate.X, currentX)
+				item.coordinate.Y = append(item.coordinate.Y, currentY)
 				item.isDigit = unicode.IsDigit(value)
 
 				itemRunes = append(itemRunes, value)
