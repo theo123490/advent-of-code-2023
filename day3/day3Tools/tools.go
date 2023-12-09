@@ -2,15 +2,17 @@ package day3Tools
 
 import (
 	"fmt"
+	"strconv"
 	"unicode"
 
 	"github.com/theo123490/advent-of-code-2023/commonTools"
 )
 
 type Item struct {
-	Name       string
-	isDigit    bool
-	coordinate Coordinate
+	Name         string
+	isDigit      bool
+	coordinate   Coordinate
+	isPartNumber bool
 }
 
 type Coordinate struct {
@@ -19,19 +21,76 @@ type Coordinate struct {
 }
 
 func GetFinalResult(inputFile string) int {
+	var finalInt int = 0
 	itemSlices := getSchematicCoordinates(inputFile)
 	symbolSlice := getSymbol(itemSlices)
+	numberSlice := getNumbers(itemSlices)
 	fmt.Println(symbolSlice)
 	for i := range symbolSlice {
 		fmt.Println(symbolSlice[i].Name)
 	}
-	fmt.Println("*******")
-	numberSlice := getNumbers(itemSlices)
-	fmt.Println(numberSlice)
-	for i := range numberSlice {
-		fmt.Println(numberSlice[i].Name)
+	// fmt.Println("*******")
+	// fmt.Println(numberSlice)
+	// for i := range numberSlice {
+	// 	fmt.Println(numberSlice[i].Name)
+	// }
+
+	var symbolSurroundingSlice []Coordinate
+	for _, symbol := range symbolSlice {
+		symbolX := symbol.coordinate.X[0]
+		symbolY := symbol.coordinate.Y[0]
+		symbolSurroundingSlice = append(symbolSurroundingSlice, getCoordinateSurrounding(symbolX, symbolY))
 	}
-	return 0
+
+	flagPartNumber(symbolSurroundingSlice, numberSlice)
+	for i := range numberSlice {
+		if numberSlice[i].isPartNumber {
+			partNumberInt, err := strconv.Atoi(numberSlice[i].Name)
+			// fmt.Println(partNumberInt)
+			if err != nil {
+				panic(err)
+			}
+			finalInt += partNumberInt
+		} else {
+			fmt.Println(numberSlice[i].Name)
+		}
+	}
+	return finalInt
+}
+
+func flagPartNumber(symbolSurroundingSlice []Coordinate, numberSlice []*Item) {
+	for _, surroundingCoordinate := range symbolSurroundingSlice {
+		for numberIndex, numberPointer := range numberSlice {
+			if numberSlice[numberIndex].isInCoordinate(surroundingCoordinate) {
+				numberPointer.isPartNumber = true
+			}
+		}
+	}
+}
+
+func (coordinate Coordinate) getRawCoordinate() [][]int {
+	var itemRawCoordinates [][]int
+	for _, x := range coordinate.X {
+		for _, y := range coordinate.Y {
+			itemRawCoordinates = append(itemRawCoordinates, []int{x, y})
+		}
+	}
+
+	return itemRawCoordinates
+}
+
+func (item Item) isInCoordinate(coordinate Coordinate) bool {
+	itemRawCoordinates := item.coordinate.getRawCoordinate()
+	referenceRawCoordinate := coordinate.getRawCoordinate()
+	for _, rawCoordinate := range referenceRawCoordinate {
+		for _, itemCoordinate := range itemRawCoordinates {
+			if rawCoordinate[0] == itemCoordinate[0] && rawCoordinate[1] == itemCoordinate[1] {
+				return true
+			}
+		}
+	}
+
+	return false
 }
 
 func getSchematicCoordinates(inputFile string) []Item {
@@ -76,7 +135,6 @@ func getSchematicCoordinates(inputFile string) []Item {
 		}
 		currentY += 1
 	}
-	fmt.Println(itemSlice)
 	return itemSlice
 }
 
@@ -98,4 +156,18 @@ func getNumbers(allItemSlice []Item) []*Item {
 		}
 	}
 	return numberSlices
+}
+
+func getCoordinateSurrounding(x int, y int) Coordinate {
+	var coordinate Coordinate = Coordinate{}
+	var surroundingTranslateMatrix []int = []int{-1, 0, 1}
+
+	for _, xTranslate := range surroundingTranslateMatrix {
+		coordinate.X = append(coordinate.X, x+xTranslate)
+	}
+	for _, yTranslate := range surroundingTranslateMatrix {
+		coordinate.Y = append(coordinate.Y, y+yTranslate)
+	}
+
+	return coordinate
 }

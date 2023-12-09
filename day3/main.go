@@ -8,12 +8,11 @@ import (
 )
 
 func main() {
-	var inputFile string = "day3/example.txt"
-	// var inputFile string = "day3/input.txt"
-	day3Tools.GetFinalResult(inputFile)
-
-	var finalInt int = 0
+	// var inputFile string = "day3/example.txt"
+	var inputFile string = "day3/input.txt"
+	var finalInt int = day3Tools.GetFinalResult(inputFile)
 	fmt.Println("$$$$$$$")
 	fmt.Println(strconv.Itoa(finalInt))
+	fmt.Println("stuck not sure why")
 	fmt.Println("$$$$$$$")
 }
