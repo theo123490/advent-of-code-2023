@@ -51,11 +51,56 @@ func GetFinalResult(inputFile string) int {
 				panic(err)
 			}
 			finalInt += partNumberInt
-		} else {
-			fmt.Println(numberSlice[i].Name)
 		}
 	}
-	return finalInt
+
+	return getGearRatioSum(itemSlices, numberSlice)
+	// return finalInt
+}
+
+func getGearRatioSum(itemSlices []Item, numberSlice []*Item) int {
+	gearSlice := getGears(itemSlices)
+	fmt.Println(gearSlice)
+	for i := range gearSlice {
+		fmt.Println(gearSlice[i].Name)
+	}
+
+	var gearRatioSum int = 0
+	for _, symbol := range gearSlice {
+		var gearSurroundingSlice []Coordinate = []Coordinate{}
+		// fmt.Println(symbol)
+		var gearNumbers []int = []int{}
+		gearX := symbol.coordinate.X[0]
+		gearY := symbol.coordinate.Y[0]
+		gearSurroundingSlice = append(gearSurroundingSlice, getCoordinateSurrounding(gearX, gearY))
+		for _, surroundingCoordinate := range gearSurroundingSlice {
+			for numberIndex, _ := range numberSlice {
+				if numberSlice[numberIndex].isInCoordinate(surroundingCoordinate) {
+					currentGearNumber, _ := strconv.Atoi(numberSlice[numberIndex].Name)
+					gearNumbers = append(gearNumbers, currentGearNumber)
+				}
+			}
+		}
+		fmt.Println(gearNumbers)
+		if len(gearNumbers) == 2 {
+			gearRatio := gearNumbers[0] * gearNumbers[1]
+			gearRatioSum += gearRatio
+		} else {
+			fmt.Println(gearNumbers)
+		}
+
+	}
+	return gearRatioSum
+}
+
+func getGears(allItemSlice []Item) []*Item {
+	var gearSlices []*Item
+	for i := range allItemSlice {
+		if allItemSlice[i].Name == "*" {
+			gearSlices = append(gearSlices, &allItemSlice[i])
+		}
+	}
+	return gearSlices
 }
 
 func flagPartNumber(symbolSurroundingSlice []Coordinate, numberSlice []*Item) {
@@ -133,6 +178,15 @@ func getSchematicCoordinates(inputFile string) []Item {
 				itemRunes = append(itemRunes, value)
 			}
 		}
+
+		if isObject {
+			item.Name = string(itemRunes)
+			itemSlice = append(itemSlice, item)
+
+			isObject = false
+			item = Item{}
+		}
+
 		currentY += 1
 	}
 	return itemSlice

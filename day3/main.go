@@ -13,6 +13,5 @@ func main() {
 	var finalInt int = day3Tools.GetFinalResult(inputFile)
 	fmt.Println("$$$$$$$")
 	fmt.Println(strconv.Itoa(finalInt))
-	fmt.Println("stuck not sure why")
 	fmt.Println("$$$$$$$")
 }
