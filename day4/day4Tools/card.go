@@ -74,16 +74,36 @@ func (card *Card) isNumberInLottery(referenceNumber int) bool {
 }
 
 func (card *Card) calculateValue() {
-	var winningPower int = -1
+	var winningPower int = 0
 	for _, winningNumber := range card.winningNumberList {
 		if card.isNumberInLottery(winningNumber) {
 			winningPower += 1
 		}
 	}
 
-	if winningPower < 0 {
+	card.winningPower = winningPower
+
+	if winningPower-1 < 0 {
 		card.pointValue = 0
 	} else {
-		card.pointValue = int(math.Pow(2, float64(winningPower)))
+		card.pointValue = int(math.Pow(2, float64(winningPower-1)))
 	}
+}
+
+func makeCardMap(cardList []Card) map[int]Card {
+	var cardMap map[int]Card = make(map[int]Card)
+	for _, card := range cardList {
+		cardMap[card.Index] = card
+	}
+
+	return cardMap
+}
+
+func (card Card) getCardCopies(cardMap map[int]Card) []Card {
+	var cardCopies []Card = make([]Card, 0)
+	for i := 1; i < card.winningPower+1; i++ {
+		cardCopies = append(cardCopies, cardMap[card.Index+i])
+	}
+
+	return cardCopies
 }
