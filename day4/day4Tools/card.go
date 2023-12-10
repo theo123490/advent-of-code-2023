@@ -6,10 +6,10 @@ import (
 )
 
 type Card struct {
-	Index         int
-	winningNumber []int
-	lotteryNumber []int
-	value         int
+	Index             int
+	winningNumberList []int
+	lotteryNumberList []int
+	value             int
 }
 
 func parseInputToCard(inputString string) Card {
@@ -32,13 +32,13 @@ func getIdFromString(inputString string) int {
 }
 
 func parseNumbers(inputString string) ([]int, []int) {
-	var winningNumbers []int
-	var lotteryNumber []int
+	var winningNumbersList []int
+	var lotteryNumberList []int
 	var numberString string = inputString[strings.IndexByte(inputString, ':')+1:]
 	var numberStringArray []string = strings.Split(numberString, " | ")
-	winningNumbers = parseNumberString(numberStringArray[0])
-	lotteryNumber = parseNumberString(numberStringArray[1])
-	return winningNumbers, lotteryNumber
+	winningNumbersList = parseNumberString(numberStringArray[0])
+	lotteryNumberList = parseNumberString(numberStringArray[1])
+	return winningNumbersList, lotteryNumberList
 }
 
 func parseNumberString(numberString string) []int {
@@ -56,4 +56,14 @@ func parseNumberString(numberString string) []int {
 	}
 
 	return numberSlice
+}
+
+func (card Card) isNumberInLottery(referenceNumber int) bool {
+	for _, lotteryNumber := range card.lotteryNumberList {
+		if lotteryNumber == referenceNumber {
+			return true
+		}
+	}
+
+	return false
 }
