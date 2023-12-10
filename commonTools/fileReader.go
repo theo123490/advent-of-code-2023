@@ -19,3 +19,15 @@ func FileReader(inputFile string) (*bufio.Scanner, *os.File) {
 
 	return scanner, file
 }
+
+func CreateInputStringSlice(inputFile string) []string {
+	var inputStringSlice []string
+	scanner, file := FileReader(inputFile)
+	defer file.Close()
+	for scanner.Scan() {
+		var inputString string = scanner.Text()
+		inputStringSlice = append(inputStringSlice, inputString)
+	}
+
+	return inputStringSlice
+}
