@@ -9,7 +9,7 @@ func GetFinalResult(inputFile string) int {
 	var totalValue int = 0
 
 	for _, card := range cardList {
-		totalValue += card.value
+		totalValue += card.pointValue
 	}
 	return totalValue
 }

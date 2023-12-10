@@ -10,7 +10,8 @@ type Card struct {
 	Index             int
 	winningNumberList []int
 	lotteryNumberList []int
-	value             int
+	pointValue        int
+	winningPower      int
 }
 
 func parseInputToCard(inputString string) Card {
@@ -19,7 +20,7 @@ func parseInputToCard(inputString string) Card {
 	var lotteryNumber []int
 	winningNumber, lotteryNumber = parseNumbers(inputString)
 
-	var card Card = Card{id, winningNumber, lotteryNumber, -1}
+	var card Card = Card{id, winningNumber, lotteryNumber, -1, 0}
 	card.calculateValue()
 	return card
 }
@@ -81,8 +82,8 @@ func (card *Card) calculateValue() {
 	}
 
 	if winningPower < 0 {
-		card.value = 0
+		card.pointValue = 0
 	} else {
-		card.value = int(math.Pow(2, float64(winningPower)))
+		card.pointValue = int(math.Pow(2, float64(winningPower)))
 	}
 }
