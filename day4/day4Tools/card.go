@@ -1,6 +1,8 @@
 package day4Tools
 
 import (
+	"fmt"
+	"math"
 	"strconv"
 	"strings"
 )
@@ -17,7 +19,10 @@ func parseInputToCard(inputString string) Card {
 	var winningNumber []int
 	var lotteryNumber []int
 	winningNumber, lotteryNumber = parseNumbers(inputString)
-	return Card{id, winningNumber, lotteryNumber, 1}
+
+	var card Card = Card{id, winningNumber, lotteryNumber, -1}
+	card.calculateValue()
+	return card
 }
 
 func getIdFromString(inputString string) int {
@@ -58,7 +63,7 @@ func parseNumberString(numberString string) []int {
 	return numberSlice
 }
 
-func (card Card) isNumberInLottery(referenceNumber int) bool {
+func (card *Card) isNumberInLottery(referenceNumber int) bool {
 	for _, lotteryNumber := range card.lotteryNumberList {
 		if lotteryNumber == referenceNumber {
 			return true
@@ -66,4 +71,19 @@ func (card Card) isNumberInLottery(referenceNumber int) bool {
 	}
 
 	return false
+}
+
+func (card *Card) calculateValue() {
+	var winningPower int = -1
+	for _, winningNumber := range card.winningNumberList {
+		if card.isNumberInLottery(winningNumber) {
+			winningPower += 1
+		}
+	}
+	fmt.Println(winningPower)
+	if winningPower < 0 {
+		card.value = 0
+	} else {
+		card.value = int(math.Pow(2, float64(winningPower)))
+	}
 }
