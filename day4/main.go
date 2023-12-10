@@ -8,8 +8,8 @@ import (
 )
 
 func main() {
-	var inputFile string = "day4/example.txt"
-	// var inputFile string = "day4/input.txt"
+	// var inputFile string = "day4/example.txt"
+	var inputFile string = "day4/input.txt"
 	var finalInt int = day4Tools.GetFinalResult(inputFile)
 	fmt.Println("$$$$$$$")
 	fmt.Println(strconv.Itoa(finalInt))

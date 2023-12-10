@@ -1,15 +1,17 @@
 package day4Tools
 
 import (
-	"fmt"
-
 	"github.com/theo123490/advent-of-code-2023/commonTools"
 )
 
 func GetFinalResult(inputFile string) int {
-	var cardSlice []Card = getCardList(inputFile)
-	fmt.Println(cardSlice)
-	return 0
+	var cardList []Card = getCardList(inputFile)
+	var totalValue int = 0
+
+	for _, card := range cardList {
+		totalValue += card.value
+	}
+	return totalValue
 }
 
 func getCardList(inputFile string) []Card {

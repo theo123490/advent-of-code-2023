@@ -1,7 +1,6 @@
 package day4Tools
 
 import (
-	"fmt"
 	"math"
 	"strconv"
 	"strings"
@@ -80,7 +79,7 @@ func (card *Card) calculateValue() {
 			winningPower += 1
 		}
 	}
-	fmt.Println(winningPower)
+
 	if winningPower < 0 {
 		card.value = 0
 	} else {
