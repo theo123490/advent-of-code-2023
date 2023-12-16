@@ -1,14 +1,17 @@
 package day5Tools
 
-import "fmt"
+import (
+	"github.com/theo123490/advent-of-code-2023/commonTools"
+)
 
 func GetFinalResult(inputFile string) int {
 	var almanac Almanac = CreateAlamanac(inputFile)
 	var seedDestination []int = almanac.getAllSeedDestination()
-	fmt.Println(seedDestination)
-	return len(almanac.seed)
+	return commonTools.GetMinimum(seedDestination)
 }
 
 func GetFinalResult2(inputFile string) int {
-	return 0
+	var almanac Almanac = CreateAlamanac(inputFile)
+	//This took too long, We should be able to find the solution by working backwards
+	return almanac.getAllSeedRangeDestinationMin()
 }

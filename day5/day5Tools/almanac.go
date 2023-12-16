@@ -1,6 +1,7 @@
 package day5Tools
 
 import (
+	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -54,6 +55,26 @@ func (almanac *Almanac) getSeeds(rawAlmanac []string) {
 
 		almanac.seed = append(almanac.seed, seedInt)
 	}
+}
+
+func (a Almanac) getSeedRangeMap() map[int]int {
+	var seedRangeMap map[int]int = make(map[int]int)
+	var seedStart int = -1
+	var seedRange int = -1
+	for index, seedItem := range a.seed {
+		if index%2 == 0 {
+			seedStart = seedItem
+		} else {
+			seedRange = seedItem
+		}
+
+		if seedStart != -1 && seedRange != -1 {
+			seedRangeMap[seedStart] = seedRange
+			seedStart = -1
+			seedRange = -1
+		}
+	}
+	return seedRangeMap
 }
 
 func getSourceToDest(source string, destination string, allAlmanacMap *[]AlmanacMap) []AlmanacMap {
@@ -164,4 +185,20 @@ func (a Almanac) getAllSeedDestination() []int {
 		destinationSlice[seedIndex] = a.getSeedDestination(a.seed[seedIndex])
 	}
 	return destinationSlice
+}
+
+func (a Almanac) getAllSeedRangeDestinationMin() int {
+	var currentDestination int
+	var minimum int = int(^uint(0) >> 1)
+	var seedRangeMap map[int]int = a.getSeedRangeMap()
+	for seedStart, seedRange := range seedRangeMap {
+		fmt.Println("******* calculating :")
+		fmt.Println(seedStart)
+		fmt.Println(seedRange)
+		for seed := seedStart; seed < seedStart+seedRange-1; seed++ {
+			currentDestination = a.getSeedDestination(seed)
+			minimum = commonTools.ChooseSmaller(minimum, currentDestination)
+		}
+	}
+	return minimum
 }
