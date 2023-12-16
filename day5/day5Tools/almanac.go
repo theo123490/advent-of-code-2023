@@ -10,15 +10,15 @@ import (
 
 type Almanac struct {
 	seed                  []int
-	seedToSoil            []AlmanacMap
-	soilToFertilizer      []AlmanacMap
-	fertilizerToWater     []AlmanacMap
-	waterToLight          []AlmanacMap
-	lightToTemperature    []AlmanacMap
-	temperatureToHumidity []AlmanacMap
-	humidityToLocation    []AlmanacMap
+	seedToSoil            AlmanacDictionary
+	soilToFertilizer      AlmanacDictionary
+	fertilizerToWater     AlmanacDictionary
+	waterToLight          AlmanacDictionary
+	lightToTemperature    AlmanacDictionary
+	temperatureToHumidity AlmanacDictionary
+	humidityToLocation    AlmanacDictionary
 }
-
+type AlmanacDictionary []AlmanacMap
 type AlmanacMap struct {
 	mapSource      string
 	mapDestination string
@@ -121,4 +121,47 @@ func printErr(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func (am AlmanacMap) calculateInBetween(sourceNumber int) (int, bool) {
+	if am.source <= sourceNumber && sourceNumber <= am.source+am.plotRange-1 {
+		return (am.destination + (sourceNumber - am.source)), true
+	}
+	return sourceNumber, false
+}
+
+func (ad AlmanacDictionary) getDestination(sourceNumber int) int {
+	var isInDict bool = false
+	var destination int = -1
+	for _, dictionary := range ad {
+		if !isInDict {
+			destination, isInDict = dictionary.calculateInBetween(sourceNumber)
+		}
+	}
+
+	if isInDict {
+		return destination
+	}
+
+	return sourceNumber
+}
+
+func (a Almanac) getSeedDestination(seed int) int {
+	var destination int = -1
+	destination = a.seedToSoil.getDestination(seed)
+	destination = a.soilToFertilizer.getDestination(destination)
+	destination = a.fertilizerToWater.getDestination(destination)
+	destination = a.waterToLight.getDestination(destination)
+	destination = a.lightToTemperature.getDestination(destination)
+	destination = a.temperatureToHumidity.getDestination(destination)
+	destination = a.humidityToLocation.getDestination(destination)
+	return destination
+}
+
+func (a Almanac) getAllSeedDestination() []int {
+	var destinationSlice []int = make([]int, len(a.seed))
+	for seedIndex := range a.seed {
+		destinationSlice[seedIndex] = a.getSeedDestination(a.seed[seedIndex])
+	}
+	return destinationSlice
 }

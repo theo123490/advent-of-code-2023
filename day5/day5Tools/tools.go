@@ -4,7 +4,8 @@ import "fmt"
 
 func GetFinalResult(inputFile string) int {
 	var almanac Almanac = CreateAlamanac(inputFile)
-	fmt.Println(almanac)
+	var seedDestination []int = almanac.getAllSeedDestination()
+	fmt.Println(seedDestination)
 	return len(almanac.seed)
 }
 
