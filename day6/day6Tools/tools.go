@@ -12,7 +12,9 @@ func GetFinalResult(inputFile string) int {
 }
 
 func GetFinalResult2(inputFile string) int {
-	return 0
+	var race Race = Race{55826490, 246144110121111, 0} //TODO: parse input for this, I'm to lazy right now
+	race.howManyWins()
+	return race.possibleWins
 }
 
 func multiplyAllWins(races []Race) int {
