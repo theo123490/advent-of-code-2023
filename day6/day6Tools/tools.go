@@ -4,13 +4,21 @@ import "fmt"
 
 func GetFinalResult(inputFile string) int {
 	var races []Race = getRaces(inputFile)
-	boat := NewBoat()
-	boat.timePressed = 1
-	fmt.Println(boat.isWinRace(races[0]))
-
-	return len(races)
+	for i := range races {
+		races[i].howManyWins()
+	}
+	fmt.Println(races)
+	return multiplyAllWins(races)
 }
 
 func GetFinalResult2(inputFile string) int {
 	return 0
+}
+
+func multiplyAllWins(races []Race) int {
+	var wins int = 1
+	for i := range races {
+		wins *= races[i].possibleWins
+	}
+	return wins
 }

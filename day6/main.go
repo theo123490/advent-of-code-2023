@@ -8,8 +8,8 @@ import (
 )
 
 func main() {
-	var inputFile string = "day6/example.txt"
-	// var inputFile string = "day6/input.txt"
+	// var inputFile string = "day6/example.txt"
+	var inputFile string = "day6/input.txt"
 	var finalInt int = day6Tools.GetFinalResult(inputFile)
 	var finalInt2 int = day6Tools.GetFinalResult2(inputFile)
 	fmt.Println("$$$$$$$")

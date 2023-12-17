@@ -8,8 +8,9 @@ import (
 )
 
 type Race struct {
-	time     int
-	distance int
+	time         int
+	distance     int
+	possibleWins int
 }
 
 func getRaces(inputFile string) []Race {
@@ -22,8 +23,20 @@ func getRaces(inputFile string) []Race {
 		commonTools.PrintErr(err)
 		distance, err := strconv.Atoi(rawDistance[i])
 		commonTools.PrintErr(err)
-		var race Race = Race{time, distance}
+		var race Race = Race{time, distance, 0}
 		races = append(races, race)
 	}
 	return races
+}
+
+func (r *Race) howManyWins() {
+	var boat Boat = NewBoat()
+	var winCounter int = 0
+	for i := 0; i <= r.time; i++ {
+		boat.timePressed = i
+		if boat.isWinRace(*r) {
+			winCounter++
+		}
+	}
+	r.possibleWins = winCounter
 }
