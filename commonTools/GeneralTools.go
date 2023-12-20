@@ -6,25 +6,29 @@ func PrintErr(err error) {
 	}
 }
 
-func BubbleSort(intSlice []int) []int {
-	var ResultSlice []int = make([]int, len(intSlice))
-	for len(intSlice) > 0 {
-		var firstElement int
-		var secondElement int
-		for i := range intSlice {
-			if i+1 >= len(intSlice) {
+type Valuables interface {
+	IsHigher(Valuables) bool
+}
+
+func BubbleSort(valueSlice []Valuables) []Valuables {
+	var resultSlice []Valuables = make([]Valuables, len(valueSlice))
+	for len(valueSlice) > 0 {
+		var firstElement Valuables
+		var secondElement Valuables
+		for i := range valueSlice {
+			if i+1 >= len(valueSlice) {
 				continue
 			}
-			firstElement = intSlice[i]
-			secondElement = intSlice[i+1]
-			if intSlice[i] > intSlice[i+1] {
-				intSlice[i] = secondElement
-				intSlice[i+1] = firstElement
+			firstElement = valueSlice[i]
+			secondElement = valueSlice[i+1]
+			if valueSlice[i].IsHigher(valueSlice[i+1]) {
+				valueSlice[i] = secondElement
+				valueSlice[i+1] = firstElement
 			}
 		}
 
-		ResultSlice[len(intSlice)-1] = intSlice[len(intSlice)-1]
-		intSlice = intSlice[:len(intSlice)-1]
+		resultSlice[len(valueSlice)-1] = valueSlice[len(valueSlice)-1]
+		valueSlice = valueSlice[:len(valueSlice)-1]
 	}
-	return ResultSlice
+	return resultSlice
 }
