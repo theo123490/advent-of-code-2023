@@ -7,10 +7,13 @@ import (
 )
 
 type Card rune
+type CardHandType string
 
 type CardHand struct {
-	cards        []Card
-	cardValueMap map[Card]int
+	cards            []Card
+	cardValueMap     *map[Card]int
+	cardHandType     CardHandType
+	cardHandTypeRule map[CardHandType]int
 }
 
 func CreateCardValueMap() map[Card]int {
@@ -35,15 +38,27 @@ func CreateCardValueMap() map[Card]int {
 func (ch CardHand) IsHigher(otherValue commonTools.Valuables) bool {
 	var otherCh CardHand
 	var ok bool
-
 	if otherCh, ok = otherValue.(CardHand); !ok {
-		fmt.Errorf("Can only compare with other cardHands not")
+		panic(fmt.Errorf("can only compare with other cardHands not"))
 	}
 
-	if &ch.cardValueMap != &otherCh.cardValueMap {
-		fmt.Errorf("cardValueMap doesnt match")
-	}
-	var chMap map[Card]int = ch.cardValueMap
+	//TODO: create a check to make sure card value map matches
+	var chMap map[Card]int = *ch.cardValueMap
 
 	return chMap[ch.cards[0]] > chMap[otherCh.cards[0]]
+}
+
+func newCardHand(cards string, cardValueMap *map[Card]int, cardHandTypeRule map[CardHandType]int) CardHand {
+	var currentCards []Card = make([]Card, 5)
+
+	if len(cards) != 5 {
+		panic(fmt.Errorf("cards length is not 5 its %d, make it 5 or else", len(cards)))
+	}
+	for i := range cards {
+		currentCards[i] = Card(cards[0])
+	}
+
+	var cardHand CardHand = CardHand{currentCards, cardValueMap, "", cardHandTypeRule}
+
+	return cardHand
 }

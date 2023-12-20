@@ -6,23 +6,8 @@ type myInt int
 
 func GetFinalResult(inputFile string) int {
 	var cardValueMap map[Card]int = CreateCardValueMap()
-	var cardHandA CardHand = CardHand{
-		[]Card{
-			Card("2"[0]),
-			Card("2"[0]),
-			Card("4"[0]),
-			Card("2"[0]),
-			Card("2"[0]),
-		}, cardValueMap}
-
-	var cardHandB CardHand = CardHand{
-		[]Card{
-			Card("4"[0]),
-			Card("2"[0]),
-			Card("4"[0]),
-			Card("2"[0]),
-			Card("2"[0]),
-		}, cardValueMap}
+	var cardHandA CardHand = newCardHand("5A222", &cardValueMap, make(map[CardHandType]int))
+	var cardHandB CardHand = newCardHand("42422", &cardValueMap, make(map[CardHandType]int))
 
 	fmt.Println(cardHandB.IsHigher(cardHandA))
 	return 0
