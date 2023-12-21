@@ -2,6 +2,8 @@ package day7Tools
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 
 	"github.com/theo123490/advent-of-code-2023/commonTools"
 )
@@ -19,6 +21,7 @@ const fiveOak CardHandType = CardHandType("five_oak")
 
 type CardHand struct {
 	cards            []Card
+	bid              int
 	cardValueMap     *map[Card]int
 	cardHandType     CardHandType
 	cardHandTypeRule map[CardHandType]int
@@ -69,7 +72,7 @@ func (ch CardHand) IsHigher(otherValue commonTools.Valuables) bool {
 	return chMap[ch.cards[0]] > chMap[otherCh.cards[0]]
 }
 
-func newCardHand(cards string, cardValueMap *map[Card]int, cardHandTypeRule map[CardHandType]int) CardHand {
+func newCardHand(cards string, bid int, cardValueMap *map[Card]int, cardHandTypeRule map[CardHandType]int) CardHand {
 	var currentCards []Card = make([]Card, 5)
 
 	if len(cards) != 5 {
@@ -79,7 +82,7 @@ func newCardHand(cards string, cardValueMap *map[Card]int, cardHandTypeRule map[
 		currentCards[i] = Card(cards[i])
 	}
 
-	var cardHand CardHand = CardHand{currentCards, cardValueMap, "", cardHandTypeRule}
+	var cardHand CardHand = CardHand{currentCards, bid, cardValueMap, "", cardHandTypeRule}
 	cardHand.getCardHandType()
 
 	return cardHand
@@ -136,4 +139,25 @@ func (ch *CardHand) createCardMap() map[Card]int {
 	}
 
 	return cardMap
+}
+
+func parseCardHands(inputFile string) []CardHand {
+	scanner, file := commonTools.FileReader(inputFile)
+	var cardHandSlice []CardHand = make([]CardHand, 0)
+	var cardValueMap map[Card]int = CreateCardValueMap()
+	var cardHandTypeRuleMap = CreateCardHandTypeRuleMap()
+
+	defer file.Close()
+	for scanner.Scan() {
+		var inputString string = scanner.Text()
+		var inputField []string = strings.Fields(inputString)
+		var cardHandString string = inputField[0]
+		var bidString string = inputField[1]
+		bid, err := strconv.Atoi(bidString)
+		commonTools.PrintErr(err)
+		var newCardHand CardHand = newCardHand(cardHandString, bid, &cardValueMap, cardHandTypeRuleMap)
+		cardHandSlice = append(cardHandSlice, newCardHand)
+	}
+
+	return cardHandSlice
 }
