@@ -22,9 +22,9 @@ const fiveOak CardHandType = CardHandType("five_oak")
 type CardHand struct {
 	cards            []Card
 	bid              int
-	cardValueMap     *map[Card]int
 	cardHandType     CardHandType
-	cardHandTypeRule map[CardHandType]int
+	cardValueMap     *map[Card]int
+	cardHandTypeRule *map[CardHandType]int
 }
 
 func CreateCardValueMap() map[Card]int {
@@ -72,7 +72,7 @@ func (ch CardHand) IsHigher(otherValue commonTools.Valuables) bool {
 	return chMap[ch.cards[0]] > chMap[otherCh.cards[0]]
 }
 
-func newCardHand(cards string, bid int, cardValueMap *map[Card]int, cardHandTypeRule map[CardHandType]int) CardHand {
+func newCardHand(cards string, bid int, cardValueMap *map[Card]int, cardHandTypeRule *map[CardHandType]int) CardHand {
 	var currentCards []Card = make([]Card, 5)
 
 	if len(cards) != 5 {
@@ -82,7 +82,7 @@ func newCardHand(cards string, bid int, cardValueMap *map[Card]int, cardHandType
 		currentCards[i] = Card(cards[i])
 	}
 
-	var cardHand CardHand = CardHand{currentCards, bid, cardValueMap, "", cardHandTypeRule}
+	var cardHand CardHand = CardHand{currentCards, bid, "", cardValueMap, cardHandTypeRule}
 	cardHand.getCardHandType()
 
 	return cardHand
@@ -155,7 +155,7 @@ func parseCardHands(inputFile string) []CardHand {
 		var bidString string = inputField[1]
 		bid, err := strconv.Atoi(bidString)
 		commonTools.PrintErr(err)
-		var newCardHand CardHand = newCardHand(cardHandString, bid, &cardValueMap, cardHandTypeRuleMap)
+		var newCardHand CardHand = newCardHand(cardHandString, bid, &cardValueMap, &cardHandTypeRuleMap)
 		cardHandSlice = append(cardHandSlice, newCardHand)
 	}
 
