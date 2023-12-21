@@ -9,6 +9,14 @@ import (
 type Card rune
 type CardHandType string
 
+const highCard CardHandType = CardHandType("high_card")
+const onePair CardHandType = CardHandType("one_pair")
+const twoPair CardHandType = CardHandType("two_pair")
+const threeOak CardHandType = CardHandType("three_oak")
+const fullHouse CardHandType = CardHandType("full_house")
+const fourOak CardHandType = CardHandType("four_oak")
+const fiveOak CardHandType = CardHandType("five_oak")
+
 type CardHand struct {
 	cards            []Card
 	cardValueMap     *map[Card]int
@@ -35,6 +43,19 @@ func CreateCardValueMap() map[Card]int {
 	return cardValueMap
 }
 
+func CreateCardHandTypeRuleMap() map[CardHandType]int {
+	var cardHandTypeRule map[CardHandType]int = map[CardHandType]int{
+		highCard:  1,
+		onePair:   2,
+		twoPair:   3,
+		threeOak:  4,
+		fullHouse: 5,
+		fourOak:   6,
+		fiveOak:   7,
+	}
+	return cardHandTypeRule
+}
+
 func (ch CardHand) IsHigher(otherValue commonTools.Valuables) bool {
 	var otherCh CardHand
 	var ok bool
@@ -55,10 +76,64 @@ func newCardHand(cards string, cardValueMap *map[Card]int, cardHandTypeRule map[
 		panic(fmt.Errorf("cards length is not 5 its %d, make it 5 or else", len(cards)))
 	}
 	for i := range cards {
-		currentCards[i] = Card(cards[0])
+		currentCards[i] = Card(cards[i])
 	}
 
 	var cardHand CardHand = CardHand{currentCards, cardValueMap, "", cardHandTypeRule}
+	cardHand.getCardHandType()
 
 	return cardHand
+}
+
+func (ch *CardHand) getCardHandType() {
+	var cardMap map[Card]int = ch.createCardMap()
+	var cardHandTypeMap map[CardHandType]int = map[CardHandType]int{
+		onePair:  0,
+		threeOak: 0,
+		fourOak:  0,
+		fiveOak:  0,
+	}
+	ch.cardHandType = highCard
+	for _, cardValue := range cardMap {
+		if cardValue == 2 {
+			cardHandTypeMap[onePair] += 1
+		}
+		if cardValue == 3 {
+			cardHandTypeMap[threeOak] += 1
+		}
+		if cardValue == 4 {
+			cardHandTypeMap[fourOak] += 1
+		}
+		if cardValue == 5 {
+			cardHandTypeMap[fiveOak] += 1
+		}
+	}
+
+	if cardHandTypeMap[onePair] == 1 {
+		ch.cardHandType = onePair
+	}
+	if cardHandTypeMap[onePair] == 2 {
+		ch.cardHandType = twoPair
+	}
+	if cardHandTypeMap[threeOak] >= 1 {
+		ch.cardHandType = threeOak
+	}
+	if cardHandTypeMap[onePair] >= 1 && cardHandTypeMap[threeOak] >= 1 {
+		ch.cardHandType = fullHouse
+	}
+	if cardHandTypeMap[fourOak] >= 1 {
+		ch.cardHandType = fourOak
+	}
+	if cardHandTypeMap[fiveOak] >= 1 {
+		ch.cardHandType = fiveOak
+	}
+}
+
+func (ch *CardHand) createCardMap() map[Card]int {
+	var cardMap map[Card]int = make(map[Card]int)
+	for _, card := range ch.cards {
+		cardMap[card] += 1
+	}
+
+	return cardMap
 }
