@@ -68,8 +68,16 @@ func (ch CardHand) IsHigher(otherValue commonTools.Valuables) bool {
 
 	//TODO: create a check to make sure card value map matches
 	var chMap map[Card]int = *ch.cardValueMap
+	var chTypeRule map[CardHandType]int = *ch.cardHandTypeRule
+	if ch.cardHandType == otherCh.cardHandType {
+		for i := range ch.cards {
+			if chMap[ch.cards[i]] != chMap[otherCh.cards[i]] {
+				return chMap[ch.cards[i]] > chMap[otherCh.cards[i]]
+			}
+		}
+	}
 
-	return chMap[ch.cards[0]] > chMap[otherCh.cards[0]]
+	return chTypeRule[ch.cardHandType] > chTypeRule[otherCh.cardHandType]
 }
 
 func newCardHand(cards string, bid int, cardValueMap *map[Card]int, cardHandTypeRule *map[CardHandType]int) CardHand {
@@ -160,4 +168,27 @@ func parseCardHands(inputFile string) []CardHand {
 	}
 
 	return cardHandSlice
+}
+
+func CardHandBubbleSort(cardHandSlice []CardHand) []CardHand {
+	var valuableSlice []commonTools.Valuables = make([]commonTools.Valuables, len(cardHandSlice))
+	for i, cardHand := range cardHandSlice {
+		valuableSlice[i] = cardHand
+	}
+
+	valuableSlice = commonTools.BubbleSort(valuableSlice)
+
+	for i, valuables := range valuableSlice {
+		cardHandSlice[i] = valuables.(CardHand)
+	}
+	return cardHandSlice
+}
+
+func calculateBids(chSlice []CardHand) int {
+	var bidTotal int
+	for i, cardHand := range chSlice {
+		bidTotal += cardHand.bid * (i + 1)
+	}
+
+	return bidTotal
 }

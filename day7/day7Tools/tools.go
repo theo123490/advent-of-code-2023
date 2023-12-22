@@ -1,11 +1,13 @@
 package day7Tools
 
-import "fmt"
-
 func GetFinalResult(inputFile string) int {
 	var cardHandSlice []CardHand = parseCardHands(inputFile)
-	fmt.Println(cardHandSlice)
-	return len(cardHandSlice)
+	cardHandSlice = CardHandBubbleSort(cardHandSlice)
+
+	// for _, card := range cardHandSlice {
+	// 	fmt.Println(card.cards)
+	// }
+	return calculateBids(cardHandSlice)
 }
 
 func GetFinalResult2(inputFile string) int {
